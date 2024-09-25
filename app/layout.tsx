@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { cn } from "@/utils/cn";
 import "./globals.css";
 
@@ -21,7 +22,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, "antialiased")}>
         <NextUIProvider>
-          <main className="dark text-foreground bg-background">{children}</main>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         </NextUIProvider>
       </body>
     </html>
