@@ -23,8 +23,8 @@ export default function CreatePasscode() {
       return;
     }
     if (passcode.length === 6) {
-      const encryptedPasscode = encrypt(passcode);
-      localStorage.setItem("encryptedPasscode", encryptedPasscode);
+      const encryptedData = encrypt(passcode);
+      localStorage.setItem("passcode", encryptedData);
       router.push("/backup");
     }
   };

@@ -13,7 +13,7 @@ export default function CreateNewWallet() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!localStorage.getItem("encryptedPasscode")) {
+    if (!localStorage.getItem("passcode")) {
       router.push("/create-passcode");
     }
   }, [router]);

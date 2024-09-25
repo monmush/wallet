@@ -10,8 +10,8 @@ export default function Home() {
   const router = useRouter();
 
   const handleCreateWallet = () => {
-    const encryptedPasscode = localStorage.getItem("encryptedPasscode");
-    if (encryptedPasscode) {
+    const passcode = localStorage.getItem("passcode");
+    if (passcode) {
       router.push("/create-new-wallet");
     } else {
       router.push("/passcode");

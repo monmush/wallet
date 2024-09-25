@@ -1,34 +1,23 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import * as bip32 from "bip32";
-import * as bip39 from "bip39";
-import { networks, payments } from "bitcoinjs-lib";
 import { Copy, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import * as ecc from "tiny-secp256k1";
+import { generateSecretPhrase } from "../actions";
 
 export default function SecretPhrases() {
   const [secretPhrase, setSecretPhrase] = useState<string[]>([]);
+
   const router = useRouter();
 
   useEffect(() => {
-    const mnemonic = bip39.generateMnemonic();
-    const words = mnemonic.split(" ");
-    const bip32Instance = bip32.BIP32Factory(ecc);
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
-    const root = bip32Instance.fromSeed(seed, networks.bitcoin);
+    async function fetchSecretPhrase() {
+      const { secretPhases } = await generateSecretPhrase();
+      setSecretPhrase(secretPhases);
+    }
 
-    // Derive the Bitcoin wallet (BIP-44 path for Bitcoin: m/44'/0'/0'/0/0)
-    const account = root.derivePath("m/44'/0'/0'/0/0");
-
-    // Get the public key and Bitcoin address
-    const { address } = payments.p2pkh({ pubkey: account.publicKey });
-
-    console.log(`Mnemonic: ${mnemonic}`);
-    console.log(`Bitcoin Address: ${address}`);
-    setSecretPhrase(words);
+    fetchSecretPhrase();
   }, []);
 
   const handleCopy = () => {
