@@ -1,10 +1,13 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
+import * as bip32 from "bip32";
 import * as bip39 from "bip39";
+import { networks, payments } from "bitcoinjs-lib";
 import { Copy, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import * as ecc from "tiny-secp256k1";
 
 export default function SecretPhrases() {
   const [secretPhrase, setSecretPhrase] = useState<string[]>([]);
@@ -13,6 +16,18 @@ export default function SecretPhrases() {
   useEffect(() => {
     const mnemonic = bip39.generateMnemonic();
     const words = mnemonic.split(" ");
+    const bip32Instance = bip32.BIP32Factory(ecc);
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const root = bip32Instance.fromSeed(seed, networks.bitcoin);
+
+    // Derive the Bitcoin wallet (BIP-44 path for Bitcoin: m/44'/0'/0'/0/0)
+    const account = root.derivePath("m/44'/0'/0'/0/0");
+
+    // Get the public key and Bitcoin address
+    const { address } = payments.p2pkh({ pubkey: account.publicKey });
+
+    console.log(`Mnemonic: ${mnemonic}`);
+    console.log(`Bitcoin Address: ${address}`);
     setSecretPhrase(words);
   }, []);
 
@@ -72,21 +87,19 @@ export default function SecretPhrases() {
             Continue
           </Button>
 
-          <div className="mt-8 max-w-2xl mx-auto">
-            <div
-              className="bg-yellow-100 bg-opacity-10 rounded-lg text-yellow-600 border-l-4 p-4 max-w-4xl"
-              role="alert"
-            >
-              <div className="flex items-center">
-                <Info size={24} className="mr-2" />
-                <span>Important Note</span>
-              </div>
-              <p className="text-sm">
-                Never share your secret phrase with anyone. This phrase is the
-                key to your wallet and sharing it could result in the loss of
-                your assets.
-              </p>
+          <div
+            className="mt-8 bg-yellow-100 bg-opacity-10 border border-yellow-600 text-yellow-600 rounded-lg p-4 w-full max-w-2xl"
+            role="alert"
+          >
+            <div className="flex items-center mb-2">
+              <Info size={24} className="mr-2" />
+              <span className="font-bold">Important Note</span>
             </div>
+            <p className="text-sm">
+              Never share your secret phrase with anyone. This phrase is the key
+              to your wallet and sharing it could result in the loss of your
+              assets.
+            </p>
           </div>
         </div>
       </div>
