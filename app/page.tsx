@@ -3,7 +3,6 @@
 import { Button } from "@nextui-org/button";
 import { Card, CardBody } from "@nextui-org/card";
 import { Download, Plus } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -12,7 +11,7 @@ export default function Home() {
   const handleCreateWallet = () => {
     const passcode = localStorage.getItem("passcode");
     if (passcode) {
-      router.push("/create-new-wallet");
+      router.push("/secret-phrase-understanding");
     } else {
       router.push("/passcode");
     }
@@ -25,14 +24,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md space-y-8">
-        <div className="flex justify-center">
-          <Image
-            src="/path-to-your-illustration.svg"
-            alt="Wallet Illustration"
-            width={200}
-            height={200}
-          />
-        </div>
+        <div className="flex justify-center"></div>
 
         <h1 className="text-2xl font-bold text-center">
           Explore the limitless possibilities of the web with our community

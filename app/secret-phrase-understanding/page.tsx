@@ -2,11 +2,10 @@
 
 import { Button } from "@nextui-org/button";
 import { Checkbox } from "@nextui-org/checkbox";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function CreateNewWallet() {
+export default function SecretPhraseUnderstanding() {
   const [checkedItems, setCheckedItems] = useState(new Set<string>([]));
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
@@ -37,7 +36,7 @@ export default function CreateNewWallet() {
       // Here you would typically create the wallet
       console.log("Creating wallet...");
       // Then redirect to the next page in your flow
-      router.push("/secret-phases");
+      router.push("/wallet-creation");
     }
   };
 
@@ -58,12 +57,8 @@ export default function CreateNewWallet() {
         </div>
 
         <div className="flex-grow flex flex-col items-center justify-center">
-          <Image
-            src="/path-to-your-illustration.svg"
-            alt="Backup Illustration"
-            width={200}
-            height={200}
-          />
+          {/* Illustration placeholder */}
+          <div className="h-[200px] w-[200px]" />
 
           <h2 className="text-2xl font-bold mt-8 mb-4 text-center">
             This secret phrase is the master key to your wallet

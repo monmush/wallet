@@ -1,23 +1,27 @@
 "use client";
 
+import { useWallet } from "@/hooks/useWallet";
 import { Button } from "@nextui-org/button";
 import { Copy, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { generateSecretPhrase } from "../actions";
 
-export default function SecretPhrases() {
+export default function WalletCreation() {
   const [secretPhrase, setSecretPhrase] = useState<string[]>([]);
-
+  const { saveWallet } = useWallet();
   const router = useRouter();
 
   useEffect(() => {
     async function fetchSecretPhrase() {
-      const { secretPhases } = await generateSecretPhrase();
+      const { secretPhases, publicKey, privateKey, address } =
+        await generateSecretPhrase();
+      saveWallet({ publicKey, privateKey, address });
       setSecretPhrase(secretPhases);
     }
 
     fetchSecretPhrase();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCopy = () => {

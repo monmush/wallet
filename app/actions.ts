@@ -13,10 +13,10 @@ export async function generateSecretPhrase() {
   const root = bip32Instance.fromSeed(seed, networks.bitcoin);
 
   // Derive the Bitcoin wallet (BIP-44 path for Bitcoin: m/44'/0'/0'/0/0)
-  const account = root.derivePath("m/44'/0'/0'/0/0");
+  const { publicKey, privateKey } = root.derivePath("m/44'/0'/0'/0/0");
 
   // Get the public key and Bitcoin address
-  const { address } = payments.p2pkh({ pubkey: account.publicKey });
+  const { address } = payments.p2pkh({ pubkey: publicKey });
 
-  return { mnemonic, secretPhases, address, account };
+  return { mnemonic, secretPhases, address, privateKey, publicKey };
 }

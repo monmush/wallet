@@ -25,6 +25,7 @@ export default function CreatePasscode() {
     if (passcode.length === 6) {
       const encryptedData = encrypt(passcode);
       localStorage.setItem("passcode", encryptedData);
+      // TODO: Fix this. We should redirect based on the user's wallet creation status
       router.push("/backup");
     }
   };
