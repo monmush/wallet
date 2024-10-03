@@ -7,18 +7,22 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
+  const passcode = localStorage.getItem("passcode");
 
   const handleCreateWallet = () => {
-    const passcode = localStorage.getItem("passcode");
     if (passcode) {
       router.push("/secret-phrase-understanding");
     } else {
-      router.push("/passcode");
+      router.push("/passcode?mode=create");
     }
   };
 
   const handleBackupWallet = () => {
-    router.push("/backup");
+    if (passcode) {
+      router.push("/backup");
+    } else {
+      router.push("/passcode?mode=backup");
+    }
   };
 
   return (

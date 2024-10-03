@@ -8,7 +8,7 @@ import {
 import { encrypt } from "@/utils/encryption";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function CreatePasscode() {
@@ -16,6 +16,7 @@ export default function CreatePasscode() {
   const [confirmPasscode, setConfirmPasscode] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const mode = useSearchParams().get("mode");
 
   const handleSubmit = () => {
     if (passcode !== confirmPasscode) {
@@ -25,8 +26,13 @@ export default function CreatePasscode() {
     if (passcode.length === 6) {
       const encryptedData = encrypt(passcode);
       localStorage.setItem("passcode", encryptedData);
-      // TODO: Fix this. We should redirect based on the user's wallet creation status
-      router.push("/backup");
+      if (mode === "create") {
+        router.push("/wallet-creation");
+      } else if (mode === "backup") {
+        router.push("/backup");
+      } else {
+        router.push("/");
+      }
     }
   };
 

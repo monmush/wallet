@@ -8,6 +8,7 @@ interface Wallet {
   address?: string;
   privateKey?: Uint8Array;
   publicKey?: Uint8Array;
+  balance?: number;
 }
 
 export function useWallet() {
@@ -34,6 +35,25 @@ export function useWallet() {
       }
     }
   }, [encryptedPasscode]);
+
+  useEffect(() => {
+    async function fetchWalletData() {
+      try {
+        // TODO: Consider using a more reliable API for production
+        const response = await fetch(
+          `https://blockchain.info/q/addressbalance/${address}`
+        );
+        const balanceSatoshis = await response.text();
+        const balanceBTC = parseInt(balanceSatoshis) / 100000000; // Convert satoshis to BTC
+
+        setWallet((prev) => ({ ...prev, balance: balanceBTC }));
+      } catch (error) {
+        console.error("Error fetching wallet data:", error);
+      }
+    }
+
+    fetchWalletData();
+  }, [wallet?.address]);
 
   const saveWallet = (newWallet: Wallet) => {
     const stringifiedWallet = JSON.stringify(newWallet);

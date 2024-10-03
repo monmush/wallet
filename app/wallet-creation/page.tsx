@@ -32,7 +32,7 @@ export default function WalletCreation() {
 
   const handleContinue = () => {
     // Navigate to the next step
-    router.push("/confirm-secret-phrase");
+    router.push("/wallet");
   };
 
   return (

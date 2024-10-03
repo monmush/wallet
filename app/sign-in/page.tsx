@@ -75,6 +75,7 @@ export default function SignIn() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-8">
               <p className="text-sm text-gray-400 mb-2">Enter your passcode:</p>
+              {/* TODO: We should censor the passcode as the user types */}
               <Controller
                 name="passcode"
                 control={control}

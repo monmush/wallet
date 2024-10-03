@@ -3,6 +3,7 @@
 import * as bip32 from "bip32";
 import * as bip39 from "bip39";
 import { networks, payments } from "bitcoinjs-lib";
+import { cache } from "react";
 import * as ecc from "tiny-secp256k1";
 
 export async function generateSecretPhrase() {
@@ -20,3 +21,42 @@ export async function generateSecretPhrase() {
 
   return { mnemonic, secretPhases, address, privateKey, publicKey };
 }
+
+type CryptoData = {
+  id: number;
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+};
+
+export const fetchCryptoData = cache(async (): Promise<CryptoData[]> => {
+  try {
+    const response = await fetch(
+      "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=10",
+      {
+        headers: {
+          "X-CMC_PRO_API_KEY": process.env.COIN_MARKET_API_KEY!,
+        },
+        next: { revalidate: 60 }, // Cache for 1 minute
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from CoinMarketCap");
+    }
+
+    const data = await response.json();
+
+    return data.data.map((coin: any) => ({
+      id: coin.id,
+      symbol: coin.symbol,
+      name: coin.name,
+      price: coin.quote.USD.price,
+      change: coin.quote.USD.percent_change_24h,
+    }));
+  } catch (error) {
+    console.error("Error fetching crypto data:", error);
+    throw error;
+  }
+});
