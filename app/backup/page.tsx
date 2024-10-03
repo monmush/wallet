@@ -1,11 +1,14 @@
 "use client";
 
+import { toast } from "@/hooks/use-toast";
+import { useWallet } from "@/hooks/useWallet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { Info, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { createWalletFromMnemonic } from "../actions";
 
 const schema = z.object({
   walletName: z.string().min(1, "Wallet name is required"),
@@ -28,6 +31,8 @@ type FormData = z.infer<typeof schema>;
 
 export default function BackupWallet() {
   const router = useRouter();
+  // Add this line to use the wallet hook
+  const { saveWallet } = useWallet();
   const {
     control,
     handleSubmit,
@@ -40,9 +45,33 @@ export default function BackupWallet() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    // Handle backup logic here
+  const onSubmit = async (data: FormData) => {
+    try {
+      // Create a new wallet from the mnemonic
+      const newWallet = await createWalletFromMnemonic(data.secretPhrase);
+
+      // Add the new wallet to the useWallet hook
+      saveWallet({
+        address: newWallet.address,
+        privateKey: newWallet.privateKey,
+        publicKey: newWallet.publicKey,
+        balance: 0, // TODO: Fetch balance from the network
+      });
+
+      // Show success message
+      toast({
+        title: "Wallet restored successfully!",
+      });
+
+      // Redirect to the wallet page or dashboard
+      router.push("/wallet");
+    } catch (error) {
+      console.error("Error restoring wallet:", error);
+      toast({
+        title: "Failed to restore wallet. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   console.log("errors", errors);

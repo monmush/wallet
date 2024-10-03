@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@nextui-org/react": "^2.4.8",
+    "@radix-ui/react-toast": "^1.2.2",
     "@types/crypto-js": "^4.2.2",
     "bip32": "^5.0.0-rc.0",
     "bip39": "^3.1.0",
